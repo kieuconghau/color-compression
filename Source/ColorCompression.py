@@ -2,8 +2,6 @@
 
 import PIL
 import numpy as np
-import matplotlib.pyplot as plt
-from time import time
 
 def kmeans(img_1d: np.ndarray, k_clusters: int, max_iter: int, init_centroids: str):
     """
@@ -33,7 +31,6 @@ def kmeans(img_1d: np.ndarray, k_clusters: int, max_iter: int, init_centroids: s
             Store label for pixels (cluster's index on which the pixel belongs)
     """
 
-    centroids = None
     labels = [None for _ in range(len(img_1d))]
 
     if init_centroids == 'random':
@@ -43,7 +40,7 @@ def kmeans(img_1d: np.ndarray, k_clusters: int, max_iter: int, init_centroids: s
         centroids = [img_1d[i] for i in random_index_list]
 
     while max_iter:
-        start = time()
+        print(max_iter)
 
         pre_labels = labels.copy()
 
@@ -58,12 +55,10 @@ def kmeans(img_1d: np.ndarray, k_clusters: int, max_iter: int, init_centroids: s
             break
 
         for i in range(k_clusters):
-            centroids[i] = np.mean([img_1d[j] for j in clusters[i]], axis=0)
+            if clusters[i]:
+                centroids[i] = np.mean([img_1d[j] for j in clusters[i]], axis=0)
 
         max_iter -= 1
-
-        end = time()
-        print(end - start)
 
     return centroids, labels
 
@@ -131,18 +126,3 @@ def color_compression(img_path: str, num_colors: int, max_iter: int = 1000, init
     img = img.reshape(img_height, img_width, num_channels)
 
     return img
-
-
-if __name__ == "__main__":
-    start = time()
-
-    path = r"C:\Users\PC\Desktop\06.jpg"
-    img_2d = color_compression(path, 7, 1000, 'in_pixels')
-
-    end = time()
-    print(end - start)
-
-    if img_2d is not None:
-        image = PIL.Image.fromarray(img_2d, 'RGB')
-        plt.imshow(image)
-        plt.show()
